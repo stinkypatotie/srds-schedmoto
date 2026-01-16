@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payslip Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: #e0e0e0;
+            color: #666;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #2196F3;
+            color: white;
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2196F3;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+        }
+
+        .btn-edit {
+            background: #FF9800;
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-edit:hover {
+            background: #e68900;
+        }
+
+        .btn-print {
+            background: #9C27B0;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .btn-print:hover {
+            background: #7B1FA2;
+        }
+
+        .staff-list, .deduction-list, .record-list {
+            margin-top: 20px;
+        }
+
+        .staff-item, .deduction-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .staff-info, .deduction-info {
+            flex: 1;
+        }
+
+        .staff-info h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .staff-info p, .deduction-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 6px;
+        }
+
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .calendar-table th {
+            background: #2196F3;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        .calendar-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+        }
+
+        .calendar-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .calendar-table tr:hover {
+            background: #e3f2fd;
+        }
+
+        .rest-day-badge {
+            background: #FF9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .edit-form {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        /* A4 PDF Print Styles */
+        @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+                width: 210mm;
+            }
+
+            .header, .tabs, .no-print {
+                display: none !important;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .content {
+                box-shadow: none;
+                padding: 0;
+                width: 100%;
+            }
+
+            .printable-payslip {
+                width: 100%;
+                font-size: 12px;
+                line-height: 1.4;
+                position: relative;
+            }
+
+            .watermark {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0.1;
+                z-index: -1;
+                width: 400px;
+                height: auto;
+                pointer-events: none;
+            }
+
+            .print-header {
+                text-align: center;
+                margin-bottom: 20mm;
+                padding-bottom: 10mm;
+                border-bottom: 3px solid #333;
+            }
+
+            .print-header h1 {
+                font-size: 28px;
+                margin-bottom: 3mm;
+                font-weight: bold;
+                letter-spacing: 2px;
+            }
+
+            .print-header p {
+                font-size: 14px;
+            }
+
+            .print-info-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .print-info-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                font-size: 12px;
+            }
+
+            .print-info-item strong {
+                min-width: 180px;
+                font-size: 12px;
+            }
+
+            .print-computation {
+                margin: 20px 0;
+            }
+
+            .print-computation h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 5px;
+            }
+
+            .print-computation-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+                font-size: 12px;
+            }
+
+            .print-computation-row.total {
+                border-top: 2px solid #333;
+                border-bottom: 2px solid #333;
+                padding: 15px 10px;
+                font-size: 14px;
+                font-weight: bold;
+                background: #f5f5f5;
+                margin-top: 10px;
+            }
+
+            .signature-section {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 100px;
+                margin-top: 50mm;
+                page-break-inside: avoid;
+            }
+
+            .signature-box {
+                text-align: center;
+            }
+
+            .signature-line {
+                border-top: 2px solid #333;
+                margin-top: 30mm;
+                padding-top: 5mm;
+                font-size: 12px;
+            }
+
+            .print-footer {
+                margin-top: 30mm;
+                padding-top: 10mm;
+                border-top: 2px solid #333;
+            }
+        }
+
+        .printable-payslip {
+            display: none;
+            position: relative;
+        }
+
+        .printable-payslip.active {
+            display: block;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            z-index: 0;
+            width: 400px;
+            height: auto;
+            pointer-events: none;
+        }
+
+        .print-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #333;
+            position: relative;
+            z-index: 1;
+        }
+
+        .print-header h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .print-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .print-info {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .print-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .print-info-item {
+            display: flex;
+            padding: 8px 0;
+        }
+
+        .print-info-item strong {
+            min-width: 180px;
+            color: #333;
+        }
+
+        .print-info-item span {
+            color: #666;
+        }
+
+        .print-computation {
+            margin: 30px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .print-computation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .print-computation-row.total {
+            background: #f5f5f5;
+            font-weight: bold;
+            font-size: 16px;
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+
+        .print-footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signature-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            margin-top: 60px;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-top: 50px;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header no-print">
+            <h1>Payslip Management System</h1>
+            <div class="tabs">
+                <button class="tab active" onclick="switchView('admin')">Admin Panel</button>
+                <button class="tab" onclick="switchView('dtr')">DTR Entry</button>
+                <button class="tab" onclick="switchView('payslip')">Generate Payslip</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="admin-view" class="view active">
+                <h2>Admin Panel</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Cutoff Start Date</label>
+                        <input type="date" id="cutoff-start">
+                    </div>
+                    <div class="form-group">
+                        <label>Cutoff End Date</label>
+                        <input type="date" id="cutoff-end">
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 30px;">Staff Management</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Staff Name</label>
+                        <input type="text" id="staff-name" placeholder="Enter staff name">
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <select id="staff-position">
+                            <option value="regular">Regular (₱650/day, ₱68 OT)</option>
+                            <option value="trainee">Trainee (₱500/day, ₱52 OT)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="align-self: end;">
+                        <button class="btn-primary" onclick="addStaff()">Add Staff</button>
+                    </div>
+                </div>
+
+                <div class="staff-list" id="staff-list"></div>
+
+                <h2 style="margin-top: 30px;">Deductions Management</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Select Staff</label>
+                        <select id="deduction-staff"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Deduction Label</label>
+                        <input type="text" id="deduction-label" placeholder="e.g., SSS, PhilHealth">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="deduction-amount" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group" style="align-self: end;">
+                        <button class="btn-primary" onclick="addDeduction()">Add Deduction</button>
+                    </div>
+                </div>
+
+                <div class="deduction-list" id="deduction-list"></div>
+            </div>
+
+            <div id="dtr-view" class="view">
+                <h2>Daily Time Record Entry</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Select Staff</label>
+                        <select id="dtr-staff"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="dtr-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Login Time</label>
+                        <input type="time" id="dtr-login">
+                    </div>
+                    <div class="form-group">
+                        <label>Logout Time</label>
+                        <input type="time" id="dtr-logout">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="dtr-restday" style="width: auto; margin-right: 5px;">
+                            Rest Day
+                        </label>
+                    </div>
+                    <div class="form-group" style="align-self: end;">
+                        <button class="btn-primary" onclick="addTimeRecord()">Add Record</button>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 30px;">All Time Records</h2>
+                
+                <div class="filter-section">
+                    <div class="form-group">
+                        <label>Filter by Staff</label>
+                        <select id="filter-staff" onchange="updateRecordList()">
+                            <option value="">All Staff</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="record-list">
+                    <table class="calendar-table" id="record-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Staff Name</th>
+                                <th>Login Time</th>
+                                <th>Logout Time</th>
+                                <th>Hours Worked</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="record-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="payslip-view" class="view">
+                <h2 class="no-print">Generate Payslip</h2>
+                <div class="form-grid no-print">
+                    <div class="form-group">
+                        <label>Select Staff Member</label>
+                        <select id="payslip-staff" onchange="generatePayslip()"></select>
+                    </div>
+                </div>
+
+                <div id="payslip-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load data from localStorage
+        let staff = JSON.parse(localStorage.getItem('staff')) || [];
+        let timeRecords = JSON.parse(localStorage.getItem('timeRecords')) || [];
+        let deductions = JSON.parse(localStorage.getItem('deductions')) || [];
+        let cutoffStart = localStorage.getItem('cutoffStart') || '';
+        let cutoffEnd = localStorage.getItem('cutoffEnd') || '';
+
+        const RATES = {
+            regular: { daily: 650, overtime: 68 },
+            trainee: { daily: 500, overtime: 52 }
+        };
+
+        const WORK_START = '07:30';
+        const GRACE_PERIOD = 5;
+        const OVERTIME_THRESHOLD = '19:30';
+
+        // Save to localStorage
+        function saveData() {
+            localStorage.setItem('staff', JSON.stringify(staff));
+            localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
+            localStorage.setItem('deductions', JSON.stringify(deductions));
+            localStorage.setItem('cutoffStart', cutoffStart);
+            localStorage.setItem('cutoffEnd', cutoffEnd);
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            document.getElementById('cutoff-start').value = cutoffStart;
+            document.getElementById('cutoff-end').value = cutoffEnd;
+            updateStaffList();
+            updateStaffSelects();
+            updateDeductionList();
+            updateRecordList();
+        };
+
+        function switchView(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(view + '-view').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function addStaff() {
+            const name = document.getElementById('staff-name').value.trim();
+            const position = document.getElementById('staff-position').value;
+            if (!name) return alert('Please enter staff name');
+            staff.push({ id: Date.now().toString(), name, position });
+            document.getElementById('staff-name').value = '';
+            updateStaffList();
+            updateStaffSelects();
+            saveData();
+        }
+
+        function deleteStaff(id) {
+            if (!confirm('Delete this staff member?')) return;
+            staff = staff.filter(s => s.id !== id);
+            timeRecords = timeRecords.filter(r => r.staffId !== id);
+            deductions = deductions.filter(d => d.staffId !== id);
+            updateStaffList();
+            updateStaffSelects();
+            updateDeductionList();
+            updateRecordList();
+            saveData();
+        }
+
+        function updateStaffList() {
+            const list = document.getElementById('staff-list');
+            list.innerHTML = staff.map(s => `
+                <div class="staff-item">
+                    <div class="staff-info">
+                        <h3>${s.name}</h3>
+                        <p style="text-transform: capitalize;">${s.position} - ₱${RATES[s.position].daily}/day</p>
+                    </div>
+                    <button class="btn-danger" onclick="deleteStaff('${s.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function updateStaffSelects() {
+            ['deduction-staff', 'dtr-staff', 'payslip-staff', 'filter-staff'].forEach(id => {
+                const sel = document.getElementById(id);
+                const val = sel.value;
+                const baseOptions = id === 'filter-staff' ? '<option value="">All Staff</option>' : '<option value="">Select Staff</option>';
+                sel.innerHTML = baseOptions + staff.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                sel.value = val;
+            });
+        }
+
+        function addDeduction() {
+            const staffId = document.getElementById('deduction-staff').value;
+            const label = document.getElementById('deduction-label').value.trim();
+            const amount = parseFloat(document.getElementById('deduction-amount').value);
+            if (!staffId || !label || !amount) return alert('Fill all deduction fields');
+            deductions.push({ id: Date.now().toString(), staffId, label, amount });
+            document.getElementById('deduction-label').value = '';
+            document.getElementById('deduction-amount').value = '';
+            updateDeductionList();
+            saveData();
+        }
+
+        function deleteDeduction(id) {
+            if (!confirm('Delete this deduction?')) return;
+            deductions = deductions.filter(d => d.id !== id);
+            updateDeductionList();
+            saveData();
+        }
+
+        function updateDeductionList() {
+            const list = document.getElementById('deduction-list');
+            list.innerHTML = deductions.map(d => {
+                const s = staff.find(x => x.id === d.staffId);
+                return s ? `
+                    <div class="deduction-item">
+                        <div class="deduction-info">
+                            <h3>${s.name}</h3>
+                            <p>${d.label} - ₱${d.amount.toFixed(2)}</p>
+                        </div>
+                        <button class="btn-danger" onclick="deleteDeduction('${d.id}')">Delete</button>
+                    </div>
+                ` : '';
+            }).join('');
+        }
+
+        function addTimeRecord() {
+            const staffId = document.getElementById('dtr-staff').value;
+            const date = document.getElementById('dtr-date').value;
+            const loginTime = document.getElementById('dtr-login').value;
+            const logoutTime = document.getElementById('dtr-logout').value;
+            const isRestDay = document.getElementById('dtr-restday').checked;
+            if (!staffId || !date || !loginTime || !logoutTime) return alert('Fill all DTR fields');
+            timeRecords.push({ id: Date.now().toString(), staffId, date, loginTime, logoutTime, isRestDay });
+            document.getElementById('dtr-date').value = '';
+            document.getElementById('dtr-login').value = '';
+            document.getElementById('dtr-logout').value = '';
+            document.getElementById('dtr-restday').checked = false;
+            updateRecordList();
+            saveData();
+        }
+
+        function editRecord(id) {
+            const record = timeRecords.find(r => r.id === id);
+            if (!record) return;
+            
+            const recordEl = document.getElementById('record-' + id);
+            const s = staff.find(x => x.id === record.staffId);
+            
+            recordEl.innerHTML = `
+                <td colspan="7">
+                    <div class="edit-form" style="width: 100%; padding: 15px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label><strong>Date:</strong></label>
+                                <input type="date" id="edit-date-${id}" value="${record.date}" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label><strong>Login Time:</strong></label>
+                                <input type="time" id="edit-login-${id}" value="${record.loginTime}" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label><strong>Logout Time:</strong></label>
+                                <input type="time" id="edit-logout-${id}" value="${record.logoutTime}" style="width: 100%;">
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label>
+                                <input type="checkbox" id="edit-restday-${id}" ${record.isRestDay ? 'checked' : ''}>
+                                <strong>Rest Day</strong>
+                            </label>
+                        </div>
+                        <div>
+                            <button class="btn-primary" onclick="saveEdit('${id}')" style="margin-right: 10px;">Save Changes</button>
+                            <button class="btn-danger" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </div>
+                </td>
+            `;
+        }
+
+        function saveEdit(id) {
+            const date = document.getElementById('edit-date-' + id).value;
+            const loginTime = document.getElementById('edit-login-' + id).value;
+            const logoutTime = document.getElementById('edit-logout-' + id).value;
+            const isRestDay = document.getElementById('edit-restday-' + id).checked;
+            
+            const record = timeRecords.find(r => r.id === id);
+            if (record) {
+                record.date = date;
+                record.loginTime = loginTime;
+                record.logoutTime = logoutTime;
+                record.isRestDay = isRestDay;
+                updateRecordList();
+                saveData();
+            }
+        }
+
+        function cancelEdit() {
+            updateRecordList();
+        }
+
+        function deleteRecord(id) {
+            if (!confirm('Delete this time record?')) return;
+            timeRecords = timeRecords.filter(r => r.id !== id);
+            updateRecordList();
+            saveData();
+        }
+
+        function updateRecordList() {
+            const tbody = document.getElementById('record-tbody');
+            const filterStaffId = document.getElementById('filter-staff').value;
+            
+            // Filter records by staff if selected
+            let filteredRecords = timeRecords;
+            if (filterStaffId) {
+                filteredRecords = timeRecords.filter(r => r.staffId === filterStaffId);
+            }
+            
+            // Sort by date (newest first)
+            filteredRecords = filteredRecords.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (filteredRecords.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: #999;">No records found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredRecords.map(r => {
+                const s = staff.find(x => x.id === r.staffId);
+                if (!s) return '';
+                
+                const hours = calculateWorkingHours(r.loginTime, r.logoutTime);
+                const hoursDisplay = hours.toFixed(2);
+                
+                let status = '';
+                if (r.isRestDay) {
+                    status = '<span class="rest-day-badge">REST DAY</span>';
+                } else if (hours >= 9.5) {
+                    status = '<span style="color: #4CAF50; font-weight: bold;">Full Day</span>';
+                } else if (hours > 0) {
+                    status = '<span style="color: #FF9800; font-weight: bold;">Half Day</span>';
+                } else {
+                    status = '<span style="color: #f44336;">Incomplete</span>';
+                }
+                
+                return `
+                    <tr id="record-${r.id}">
+                        <td>${r.date}</td>
+                        <td><strong>${s.name}</strong></td>
+                        <td>${r.loginTime}</td>
+                        <td>${r.logoutTime}</td>
+                        <td>${hoursDisplay} hrs</td>
+                        <td>${status}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit" onclick="editRecord('${r.id}')">Edit</button>
+                                <button class="btn-danger" onclick="deleteRecord('${r.id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function calculateLate(loginTime) {
+            if (!loginTime) return 0;
+            const [wh, wm] = WORK_START.split(':').map(Number);
+            const [lh, lm] = loginTime.split(':').map(Number);
+            return Math.max(0, (lh * 60 + lm) - (wh * 60 + wm + GRACE_PERIOD));
+        }
+
+        function calculateOvertime(logoutTime) {
+            if (!logoutTime) return 0;
+            const [th, tm] = OVERTIME_THRESHOLD.split(':').map(Number);
+            const [lh, lm] = logoutTime.split(':').map(Number);
+            return (lh * 60 + lm) >= (th * 60 + tm) ? 1 : 0;
+        }
+
+        function calculateWorkingHours(loginTime, logoutTime) {
+            if (!loginTime || !logoutTime) return 0;
+            const [lih, lim] = loginTime.split(':').map(Number);
+            const [loh, lom] = logoutTime.split(':').map(Number);
+            const loginMin = lih * 60 + lim;
+            const logoutMin = loh * 60 + lom;
+            const totalMin = logoutMin < loginMin ? (logoutMin + 1440) - loginMin : logoutMin - loginMin;
+            return Math.max(0, (totalMin - 60) / 60);
+        }
+
+        function generatePayslip() {
+            const staffId = document.getElementById('payslip-staff').value;
+            cutoffStart = document.getElementById('cutoff-start').value;
+            cutoffEnd = document.getElementById('cutoff-end').value;
+            
+            if (!staffId || !cutoffStart || !cutoffEnd) {
+                document.getElementById('payslip-display').innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Please set cutoff period and select a staff member</p>';
+                return;
+            }
+
+            const staffMember = staff.find(s => s.id === staffId);
+            const records = timeRecords.filter(r => {
+                const rd = new Date(r.date);
+                return r.staffId === staffId && rd >= new Date(cutoffStart) && rd <= new Date(cutoffEnd);
+            });
+
+            const rates = RATES[staffMember.position];
+            let totalWorkingDays = 0, totalHalfDays = 0, totalOvertime = 0, totalRestDays = 0, totalLateMinutes = 0;
+
+            records.forEach(r => {
+                const hours = calculateWorkingHours(r.loginTime, r.logoutTime);
+                const overtime = calculateOvertime(r.logoutTime);
+                const late = calculateLate(r.loginTime);
+
+                if (r.isRestDay && hours >= 0) {
+                    totalRestDays++;
+                } else if (hours >= 9.5) {
+                    totalWorkingDays++;
+                } else if (hours > 0 && hours < 9.5) {
+                    totalHalfDays += hours;
+                }
+                totalOvertime += overtime;
+                totalLateMinutes += late;
+            });
+
+            const hourlyRate = parseFloat((rates.daily / 11).toFixed(2));
+            const grossSalary = (totalWorkingDays * rates.daily) + (totalHalfDays * hourlyRate) + (totalRestDays * rates.daily);
+            const overtimePay = totalOvertime * rates.overtime;
+            const latePenaltyRate = parseFloat((rates.daily / 12 / 60).toFixed(2));
+            const latePenalty = totalLateMinutes * latePenaltyRate;
+            const staffDeds = deductions.filter(d => d.staffId === staffId);
+            const totalDeds = staffDeds.reduce((sum, d) => sum + d.amount, 0);
+            const netSalary = grossSalary + overtimePay - latePenalty - totalDeds;
+
+            const printDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            document.getElementById('payslip-display').innerHTML = `
+                <div class="printable-payslip active">
+                    <div class="print-header">
+                        <h1>SIR RAMOS DRUGSTORE</h1>
+                        <p>Employee Payslip</p>
+                    </div>
+                    <div class="print-info">
+                        <div class="print-info-grid">
+                            <div class="print-info-item"><strong>Date:</strong><span>${printDate}</span></div>
+                            <div class="print-info-item"><strong>Employee Name:</strong><span>${staffMember.name}</span></div>
+                            <div class="print-info-item"><strong>Cut-Off Period:</strong><span>${cutoffStart} to ${cutoffEnd}</span></div>
+                            <div class="print-info-item"><strong>Position:</strong><span style="text-transform: capitalize;">${staffMember.position}</span></div>
+                            <div class="print-info-item"><strong>No. of Working Days:</strong><span>${totalWorkingDays}</span></div>
+                            <div class="print-info-item"><strong>No. of Overtime (hours):</strong><span>${totalOvertime}</span></div>
+                            <div class="print-info-item"><strong>No. of Rest Days:</strong><span>${totalRestDays}</span></div>
+                            <div class="print-info-item"><strong>Half Day Hours:</strong><span>${totalHalfDays.toFixed(2)} hrs</span></div>
+                        </div>
+                    </div>
+                    <div class="print-computation">
+                        <h3 style="margin-bottom: 15px;">Computation for Gross Salary</h3>
+                        <div class="print-computation-row"><span>Working Days (${totalWorkingDays} days × ₱${rates.daily})</span><span>₱${(totalWorkingDays * rates.daily).toFixed(2)}</span></div>
+                        <div class="print-computation-row"><span>Half Day Hours (${totalHalfDays.toFixed(2)} hrs × ₱${hourlyRate}/hr)</span><span>₱${(totalHalfDays * hourlyRate).toFixed(2)}</span></div>
+                        <div class="print-computation-row"><span>Rest Days (${totalRestDays} days × ₱${rates.daily})</span><span>₱${(totalRestDays * rates.daily).toFixed(2)}</span></div>
+                        <div class="print-computation-row"><span>Overtime (${totalOvertime} hours × ₱${rates.overtime})</span><span>₱${overtimePay.toFixed(2)}</span></div>
+                        <div class="print-computation-row"><span>Late Penalty (${totalLateMinutes} mins × ₱${latePenaltyRate}/min)</span><span style="color: #f44336;">- ₱${latePenalty.toFixed(2)}</span></div>
+                        <div class="print-computation-row total"><span>GROSS SALARY</span><span>₱${grossSalary.toFixed(2)}</span></div>
+                    </div>
+                    <div class="print-computation">
+                        <h3 style="margin-bottom: 15px;">Deductions</h3>
+                        ${staffDeds.map(d => `<div class="print-computation-row"><span>${d.label}</span><span style="color: #f44336;">₱${d.amount.toFixed(2)}</span></div>`).join('')}
+                        ${staffDeds.length === 0 ? '<p style="text-align: center; color: #666; padding: 20px;">No deductions</p>' : ''}
+                        <div class="print-computation-row total"><span>TOTAL DEDUCTIONS</span><span style="color: #f44336;">₱${totalDeds.toFixed(2)}</span></div>
+                    </div>
+                    <div class="print-computation">
+                        <div class="print-computation-row total" style="background: #E8F5E9; font-size: 20px;">
+                            <span>TOTAL SALARY (NET PAY)</span><span style="color: #4CAF50;">₱${netSalary.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="print-footer">
+                        <div class="signature-section">
+                            <div class="signature-box"><div class="signature-line"><strong>Employee Signature</strong></div></div>
+                            <div class="signature-box"><div class="signature-line"><strong>Authorized Signature</strong></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="no-print" style="margin-top: 20px; text-align: center;">
+                    <button class="btn-print" onclick="window.print()">🖨️ Print Payslip</button>
+                </div>
+            `;
+            saveData();
+        }
+
+        document.getElementById('cutoff-start').addEventListener('change', e => {
+            cutoffStart = e.target.value;
+            saveData();
+        });
+        
+        document.getElementById('cutoff-end').addEventListener('change', e => {
+            cutoffEnd = e.target.value;
+            saveData();
+        });
+    </script>
+</body>
+</html>
