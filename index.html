@@ -3,1039 +3,487 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payslip Management System</title>
+    <title>Work Schedule Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-        }
-
-        .tab {
-            padding: 12px 24px;
-            border: none;
-            background: #e0e0e0;
-            color: #666;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .tab.active {
-            background: #2196F3;
-            color: white;
-        }
-
-        .content {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .view {
-            display: none;
-        }
-
-        .view.active {
-            display: block;
-        }
-
-        h2 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2196F3;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        input, select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #45a049;
-        }
-
-        .btn-danger {
-            background: #f44336;
-            color: white;
-            padding: 8px 16px;
-            font-size: 12px;
-        }
-
-        .btn-danger:hover {
-            background: #da190b;
-        }
-
-        .btn-edit {
-            background: #FF9800;
-            color: white;
-            padding: 8px 16px;
-            font-size: 12px;
-        }
-
-        .btn-edit:hover {
-            background: #e68900;
-        }
-
-        .btn-print {
-            background: #9C27B0;
-            color: white;
-            margin-top: 20px;
-        }
-
-        .btn-print:hover {
-            background: #7B1FA2;
-        }
-
-        .staff-list, .deduction-list, .record-list {
-            margin-top: 20px;
-        }
-
-        .staff-item, .deduction-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .staff-info, .deduction-info {
-            flex: 1;
-        }
-
-        .staff-info h3 {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .staff-info p, .deduction-info p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .filter-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f0f0f0;
-            border-radius: 6px;
-        }
-
-        .calendar-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .calendar-table th {
-            background: #2196F3;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-size: 14px;
-            border: 1px solid #ddd;
-        }
-
-        .calendar-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            font-size: 13px;
-        }
-
-        .calendar-table tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        .calendar-table tr:hover {
-            background: #e3f2fd;
-        }
-
-        .rest-day-badge {
-            background: #FF9800;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            margin-left: 5px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-        }
-
-        .edit-form {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 4px;
-        }
-
-        /* A4 PDF Print Styles */
         @media print {
-            @page {
-                size: A4;
-                margin: 15mm;
+            body { 
+                print-color-adjust: exact; 
+                -webkit-print-color-adjust: exact;
+                background: white !important;
+                padding: 20px !important;
             }
-
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
-                width: 210mm;
-            }
-
-            .header, .tabs, .no-print {
-                display: none !important;
-            }
-
-            .container {
-                width: 100%;
-                max-width: 100%;
-                margin: 0;
-                padding: 0;
-            }
-
-            .content {
-                box-shadow: none;
-                padding: 0;
-                width: 100%;
-            }
-
-            .printable-payslip {
-                width: 100%;
-                font-size: 12px;
-                line-height: 1.4;
-                position: relative;
-            }
-
-            .watermark {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                opacity: 0.1;
-                z-index: -1;
-                width: 400px;
-                height: auto;
-                pointer-events: none;
-            }
-
-            .print-header {
-                text-align: center;
-                margin-bottom: 20mm;
-                padding-bottom: 10mm;
-                border-bottom: 3px solid #333;
-            }
-
-            .print-header h1 {
-                font-size: 28px;
-                margin-bottom: 3mm;
-                font-weight: bold;
-                letter-spacing: 2px;
-            }
-
-            .print-header p {
-                font-size: 14px;
-            }
-
-            .print-info-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .print-info-item {
-                display: flex;
-                justify-content: space-between;
-                padding: 8px 0;
-                font-size: 12px;
-            }
-
-            .print-info-item strong {
-                min-width: 180px;
-                font-size: 12px;
-            }
-
-            .print-computation {
-                margin: 20px 0;
-            }
-
-            .print-computation h3 {
-                font-size: 16px;
-                margin-bottom: 10px;
-                border-bottom: 2px solid #333;
-                padding-bottom: 5px;
-            }
-
-            .print-computation-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 10px;
-                border-bottom: 1px solid #ddd;
-                font-size: 12px;
-            }
-
-            .print-computation-row.total {
-                border-top: 2px solid #333;
-                border-bottom: 2px solid #333;
-                padding: 15px 10px;
-                font-size: 14px;
-                font-weight: bold;
-                background: #f5f5f5;
-                margin-top: 10px;
-            }
-
-            .signature-section {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 100px;
-                margin-top: 50mm;
-                page-break-inside: avoid;
-            }
-
-            .signature-box {
-                text-align: center;
-            }
-
-            .signature-line {
-                border-top: 2px solid #333;
-                margin-top: 30mm;
-                padding-top: 5mm;
-                font-size: 12px;
-            }
-
-            .print-footer {
-                margin-top: 30mm;
-                padding-top: 10mm;
-                border-top: 2px solid #333;
-            }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .screen-only { display: none !important; }
+            select { border: 0 !important; appearance: none; pointer-events: none; }
         }
-
-        .printable-payslip {
-            display: none;
-            position: relative;
-        }
-
-        .printable-payslip.active {
-            display: block;
-        }
-
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.05;
-            z-index: 0;
-            width: 400px;
-            height: auto;
-            pointer-events: none;
-        }
-
-        .print-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #333;
-            position: relative;
-            z-index: 1;
-        }
-
-        .print-header h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .print-header p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .print-info {
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .print-info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .print-info-item {
-            display: flex;
-            padding: 8px 0;
-        }
-
-        .print-info-item strong {
-            min-width: 180px;
-            color: #333;
-        }
-
-        .print-info-item span {
-            color: #666;
-        }
-
-        .print-computation {
-            margin: 30px 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .print-computation-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .print-computation-row.total {
-            background: #f5f5f5;
-            font-weight: bold;
-            font-size: 16px;
-            border-top: 2px solid #333;
-            border-bottom: 2px solid #333;
-        }
-
-        .print-footer {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            position: relative;
-            z-index: 1;
-        }
-
-        .signature-section {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 50px;
-            margin-top: 60px;
-        }
-
-        .signature-box {
-            text-align: center;
-        }
-
-        .signature-line {
-            border-top: 1px solid #333;
-            margin-top: 50px;
-            padding-top: 10px;
-        }
+        .print-only { display: none; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header no-print">
-            <h1>Payslip Management System</h1>
-            <div class="tabs">
-                <button class="tab active" onclick="switchView('admin')">Admin Panel</button>
-                <button class="tab" onclick="switchView('dtr')">DTR Entry</button>
-                <button class="tab" onclick="switchView('payslip')">Generate Payslip</button>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <h1 class="text-4xl font-bold text-gray-800">Work Schedule Manager</h1>
+                </div>
+                <button onclick="window.print()" class="no-print flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print PDF
+                </button>
+            </div>
+
+            <!-- Controls -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Month/Year Selection -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-gray-700">Month & Year</label>
+                    <div class="flex gap-3">
+                        <select id="monthSelect" class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="0">January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                        <input type="number" id="yearInput" class="w-28 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Staff Filter -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-gray-700">Filter by Staff</label>
+                    <select id="staffFilter" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <option value="all">All Staff</option>
+                    </select>
+                </div>
+
+                <!-- Add Staff -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-gray-700">Add Staff Member</label>
+                    <div class="flex gap-3">
+                        <input type="text" id="newStaffInput" placeholder="Enter name" class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <button onclick="addStaff()" class="px-4 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-all shadow-md">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="content">
-            <div id="admin-view" class="view active">
-                <h2>Admin Panel</h2>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Cutoff Start Date</label>
-                        <input type="date" id="cutoff-start">
-                    </div>
-                    <div class="form-group">
-                        <label>Cutoff End Date</label>
-                        <input type="date" id="cutoff-end">
-                    </div>
-                </div>
-
-                <h2 style="margin-top: 30px;">Staff Management</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Staff Name</label>
-                        <input type="text" id="staff-name" placeholder="Enter staff name">
-                    </div>
-                    <div class="form-group">
-                        <label>Position</label>
-                        <select id="staff-position">
-                            <option value="regular">Regular (₱650/day, ₱68 OT)</option>
-                            <option value="trainee">Trainee (₱500/day, ₱52 OT)</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="align-self: end;">
-                        <button class="btn-primary" onclick="addStaff()">Add Staff</button>
-                    </div>
-                </div>
-
-                <div class="staff-list" id="staff-list"></div>
-
-                <h2 style="margin-top: 30px;">Deductions Management</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Select Staff</label>
-                        <select id="deduction-staff"></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Deduction Label</label>
-                        <input type="text" id="deduction-label" placeholder="e.g., SSS, PhilHealth">
-                    </div>
-                    <div class="form-group">
-                        <label>Amount</label>
-                        <input type="number" id="deduction-amount" placeholder="0.00" step="0.01">
-                    </div>
-                    <div class="form-group" style="align-self: end;">
-                        <button class="btn-primary" onclick="addDeduction()">Add Deduction</button>
-                    </div>
-                </div>
-
-                <div class="deduction-list" id="deduction-list"></div>
-            </div>
-
-            <div id="dtr-view" class="view">
-                <h2>Daily Time Record Entry</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Select Staff</label>
-                        <select id="dtr-staff"></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="dtr-date">
-                    </div>
-                    <div class="form-group">
-                        <label>Login Time</label>
-                        <input type="time" id="dtr-login">
-                    </div>
-                    <div class="form-group">
-                        <label>Logout Time</label>
-                        <input type="time" id="dtr-logout">
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="dtr-restday" style="width: auto; margin-right: 5px;">
-                            Rest Day
-                        </label>
-                    </div>
-                    <div class="form-group" style="align-self: end;">
-                        <button class="btn-primary" onclick="addTimeRecord()">Add Record</button>
-                    </div>
-                </div>
-
-                <h2 style="margin-top: 30px;">All Time Records</h2>
-                
-                <div class="filter-section">
-                    <div class="form-group">
-                        <label>Filter by Staff</label>
-                        <select id="filter-staff" onchange="updateRecordList()">
-                            <option value="">All Staff</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="record-list">
-                    <table class="calendar-table" id="record-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Staff Name</th>
-                                <th>Login Time</th>
-                                <th>Logout Time</th>
-                                <th>Hours Worked</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="record-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="payslip-view" class="view">
-                <h2 class="no-print">Generate Payslip</h2>
-                <div class="form-grid no-print">
-                    <div class="form-group">
-                        <label>Select Staff Member</label>
-                        <select id="payslip-staff" onchange="generatePayslip()"></select>
-                    </div>
-                </div>
-
-                <div id="payslip-display"></div>
-            </div>
+        <!-- Schedule Table -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 screen-only">
+            <h2 id="scheduleTitle" class="text-2xl font-bold text-gray-800 mb-6"></h2>
+            <div id="scheduleContainer"></div>
         </div>
+
+        <!-- Print-Only Simple Calendar -->
+        <div class="print-only" id="printContainer"></div>
     </div>
 
     <script>
+        // State
+        let staff = [];
+        let schedules = {};
+        let selectedMonth = new Date().getMonth();
+        let selectedYear = new Date().getFullYear();
+        let selectedStaff = 'all';
+
         // Load data from localStorage
-        let staff = JSON.parse(localStorage.getItem('staff')) || [];
-        let timeRecords = JSON.parse(localStorage.getItem('timeRecords')) || [];
-        let deductions = JSON.parse(localStorage.getItem('deductions')) || [];
-        let cutoffStart = localStorage.getItem('cutoffStart') || '';
-        let cutoffEnd = localStorage.getItem('cutoffEnd') || '';
-
-        const RATES = {
-            regular: { daily: 650, overtime: 68 },
-            trainee: { daily: 500, overtime: 52 }
-        };
-
-        const WORK_START = '07:30';
-        const GRACE_PERIOD = 5;
-        const OVERTIME_THRESHOLD = '19:30';
-
-        // Save to localStorage
-        function saveData() {
-            localStorage.setItem('staff', JSON.stringify(staff));
-            localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
-            localStorage.setItem('deductions', JSON.stringify(deductions));
-            localStorage.setItem('cutoffStart', cutoffStart);
-            localStorage.setItem('cutoffEnd', cutoffEnd);
+        function loadData() {
+            const savedStaff = localStorage.getItem('workScheduleStaff');
+            const savedSchedules = localStorage.getItem('workScheduleData');
+            
+            if (savedStaff) {
+                staff = JSON.parse(savedStaff);
+            } else {
+                staff = ['Employee 1', 'Employee 2'];
+            }
+            
+            if (savedSchedules) {
+                schedules = JSON.parse(savedSchedules);
+            }
         }
 
-        // Initialize on load
-        window.onload = function() {
-            document.getElementById('cutoff-start').value = cutoffStart;
-            document.getElementById('cutoff-end').value = cutoffEnd;
-            updateStaffList();
-            updateStaffSelects();
-            updateDeductionList();
-            updateRecordList();
-        };
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('workScheduleStaff', JSON.stringify(staff));
+            localStorage.setItem('workScheduleData', JSON.stringify(schedules));
+        }
 
-        function switchView(view) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(view + '-view').classList.add('active');
-            event.target.classList.add('active');
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // Initialize
+        function init() {
+            loadData();
+            
+            document.getElementById('monthSelect').value = selectedMonth;
+            document.getElementById('yearInput').value = selectedYear;
+            
+            document.getElementById('monthSelect').addEventListener('change', (e) => {
+                selectedMonth = parseInt(e.target.value);
+                render();
+            });
+            
+            document.getElementById('yearInput').addEventListener('change', (e) => {
+                selectedYear = parseInt(e.target.value);
+                render();
+            });
+            
+            document.getElementById('staffFilter').addEventListener('change', (e) => {
+                selectedStaff = e.target.value;
+                render();
+            });
+            
+            document.getElementById('newStaffInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addStaff();
+            });
+            
+            updateStaffFilter();
+            render();
         }
 
         function addStaff() {
-            const name = document.getElementById('staff-name').value.trim();
-            const position = document.getElementById('staff-position').value;
-            if (!name) return alert('Please enter staff name');
-            staff.push({ id: Date.now().toString(), name, position });
-            document.getElementById('staff-name').value = '';
-            updateStaffList();
-            updateStaffSelects();
-            saveData();
-        }
-
-        function deleteStaff(id) {
-            if (!confirm('Delete this staff member?')) return;
-            staff = staff.filter(s => s.id !== id);
-            timeRecords = timeRecords.filter(r => r.staffId !== id);
-            deductions = deductions.filter(d => d.staffId !== id);
-            updateStaffList();
-            updateStaffSelects();
-            updateDeductionList();
-            updateRecordList();
-            saveData();
-        }
-
-        function updateStaffList() {
-            const list = document.getElementById('staff-list');
-            list.innerHTML = staff.map(s => `
-                <div class="staff-item">
-                    <div class="staff-info">
-                        <h3>${s.name}</h3>
-                        <p style="text-transform: capitalize;">${s.position} - ₱${RATES[s.position].daily}/day</p>
-                    </div>
-                    <button class="btn-danger" onclick="deleteStaff('${s.id}')">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function updateStaffSelects() {
-            ['deduction-staff', 'dtr-staff', 'payslip-staff', 'filter-staff'].forEach(id => {
-                const sel = document.getElementById(id);
-                const val = sel.value;
-                const baseOptions = id === 'filter-staff' ? '<option value="">All Staff</option>' : '<option value="">Select Staff</option>';
-                sel.innerHTML = baseOptions + staff.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-                sel.value = val;
-            });
-        }
-
-        function addDeduction() {
-            const staffId = document.getElementById('deduction-staff').value;
-            const label = document.getElementById('deduction-label').value.trim();
-            const amount = parseFloat(document.getElementById('deduction-amount').value);
-            if (!staffId || !label || !amount) return alert('Fill all deduction fields');
-            deductions.push({ id: Date.now().toString(), staffId, label, amount });
-            document.getElementById('deduction-label').value = '';
-            document.getElementById('deduction-amount').value = '';
-            updateDeductionList();
-            saveData();
-        }
-
-        function deleteDeduction(id) {
-            if (!confirm('Delete this deduction?')) return;
-            deductions = deductions.filter(d => d.id !== id);
-            updateDeductionList();
-            saveData();
-        }
-
-        function updateDeductionList() {
-            const list = document.getElementById('deduction-list');
-            list.innerHTML = deductions.map(d => {
-                const s = staff.find(x => x.id === d.staffId);
-                return s ? `
-                    <div class="deduction-item">
-                        <div class="deduction-info">
-                            <h3>${s.name}</h3>
-                            <p>${d.label} - ₱${d.amount.toFixed(2)}</p>
-                        </div>
-                        <button class="btn-danger" onclick="deleteDeduction('${d.id}')">Delete</button>
-                    </div>
-                ` : '';
-            }).join('');
-        }
-
-        function addTimeRecord() {
-            const staffId = document.getElementById('dtr-staff').value;
-            const date = document.getElementById('dtr-date').value;
-            const loginTime = document.getElementById('dtr-login').value;
-            const logoutTime = document.getElementById('dtr-logout').value;
-            const isRestDay = document.getElementById('dtr-restday').checked;
-            if (!staffId || !date || !loginTime || !logoutTime) return alert('Fill all DTR fields');
-            timeRecords.push({ id: Date.now().toString(), staffId, date, loginTime, logoutTime, isRestDay });
-            document.getElementById('dtr-date').value = '';
-            document.getElementById('dtr-login').value = '';
-            document.getElementById('dtr-logout').value = '';
-            document.getElementById('dtr-restday').checked = false;
-            updateRecordList();
-            saveData();
-        }
-
-        function editRecord(id) {
-            const record = timeRecords.find(r => r.id === id);
-            if (!record) return;
-            
-            const recordEl = document.getElementById('record-' + id);
-            const s = staff.find(x => x.id === record.staffId);
-            
-            recordEl.innerHTML = `
-                <td colspan="7">
-                    <div class="edit-form" style="width: 100%; padding: 15px;">
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
-                            <div>
-                                <label><strong>Date:</strong></label>
-                                <input type="date" id="edit-date-${id}" value="${record.date}" style="width: 100%;">
-                            </div>
-                            <div>
-                                <label><strong>Login Time:</strong></label>
-                                <input type="time" id="edit-login-${id}" value="${record.loginTime}" style="width: 100%;">
-                            </div>
-                            <div>
-                                <label><strong>Logout Time:</strong></label>
-                                <input type="time" id="edit-logout-${id}" value="${record.logoutTime}" style="width: 100%;">
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 15px;">
-                            <label>
-                                <input type="checkbox" id="edit-restday-${id}" ${record.isRestDay ? 'checked' : ''}>
-                                <strong>Rest Day</strong>
-                            </label>
-                        </div>
-                        <div>
-                            <button class="btn-primary" onclick="saveEdit('${id}')" style="margin-right: 10px;">Save Changes</button>
-                            <button class="btn-danger" onclick="cancelEdit()">Cancel</button>
-                        </div>
-                    </div>
-                </td>
-            `;
-        }
-
-        function saveEdit(id) {
-            const date = document.getElementById('edit-date-' + id).value;
-            const loginTime = document.getElementById('edit-login-' + id).value;
-            const logoutTime = document.getElementById('edit-logout-' + id).value;
-            const isRestDay = document.getElementById('edit-restday-' + id).checked;
-            
-            const record = timeRecords.find(r => r.id === id);
-            if (record) {
-                record.date = date;
-                record.loginTime = loginTime;
-                record.logoutTime = logoutTime;
-                record.isRestDay = isRestDay;
-                updateRecordList();
+            const input = document.getElementById('newStaffInput');
+            const name = input.value.trim();
+            if (name && !staff.includes(name)) {
+                staff.push(name);
+                input.value = '';
                 saveData();
+                updateStaffFilter();
+                render();
             }
         }
 
-        function cancelEdit() {
-            updateRecordList();
-        }
-
-        function deleteRecord(id) {
-            if (!confirm('Delete this time record?')) return;
-            timeRecords = timeRecords.filter(r => r.id !== id);
-            updateRecordList();
+        function removeStaff(name) {
+            staff = staff.filter(s => s !== name);
+            delete schedules[name];
             saveData();
+            updateStaffFilter();
+            render();
         }
 
-        function updateRecordList() {
-            const tbody = document.getElementById('record-tbody');
-            const filterStaffId = document.getElementById('filter-staff').value;
-            
-            // Filter records by staff if selected
-            let filteredRecords = timeRecords;
-            if (filterStaffId) {
-                filteredRecords = timeRecords.filter(r => r.staffId === filterStaffId);
-            }
-            
-            // Sort by date (newest first)
-            filteredRecords = filteredRecords.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            if (filteredRecords.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: #999;">No records found</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = filteredRecords.map(r => {
-                const s = staff.find(x => x.id === r.staffId);
-                if (!s) return '';
-                
-                const hours = calculateWorkingHours(r.loginTime, r.logoutTime);
-                const hoursDisplay = hours.toFixed(2);
-                
-                let status = '';
-                if (r.isRestDay) {
-                    status = '<span class="rest-day-badge">REST DAY</span>';
-                } else if (hours >= 9.5) {
-                    status = '<span style="color: #4CAF50; font-weight: bold;">Full Day</span>';
-                } else if (hours > 0) {
-                    status = '<span style="color: #FF9800; font-weight: bold;">Half Day</span>';
-                } else {
-                    status = '<span style="color: #f44336;">Incomplete</span>';
+        function updateStaffFilter() {
+            const filter = document.getElementById('staffFilter');
+            const current = filter.value;
+            filter.innerHTML = '<option value="all">All Staff</option>';
+            staff.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                filter.appendChild(opt);
+            });
+            filter.value = staff.includes(current) ? current : 'all';
+            selectedStaff = filter.value;
+        }
+
+        function getDaysInMonth(month, year) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function getFirstDayOfMonth(month, year) {
+            return new Date(year, month, 1).getDay();
+        }
+
+        function getSchedule(staffName, day) {
+            const key = `${selectedYear}-${selectedMonth}-${day}`;
+            return schedules[staffName]?.[key] || 'OFF';
+        }
+
+        function setSchedule(staffName, day, value) {
+            if (!schedules[staffName]) schedules[staffName] = {};
+            schedules[staffName][`${selectedYear}-${selectedMonth}-${day}`] = value;
+            saveData();
+            render();
+        }
+
+        function copyWeekSchedule(staffName, weekDays) {
+            // Get the schedule for current week
+            const weekSchedule = [];
+            weekDays.forEach(day => {
+                if (day) {
+                    weekSchedule.push(getSchedule(staffName, day));
                 }
-                
-                return `
-                    <tr id="record-${r.id}">
-                        <td>${r.date}</td>
-                        <td><strong>${s.name}</strong></td>
-                        <td>${r.loginTime}</td>
-                        <td>${r.logoutTime}</td>
-                        <td>${hoursDisplay} hrs</td>
-                        <td>${status}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-edit" onclick="editRecord('${r.id}')">Edit</button>
-                                <button class="btn-danger" onclick="deleteRecord('${r.id}')">Delete</button>
-                            </div>
-                        </td>
-                    </tr>
+            });
+
+            // Find the next week's days
+            const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
+            const lastDayOfWeek = weekDays.filter(d => d !== null).pop();
+            
+            if (!lastDayOfWeek) return;
+
+            let scheduleIndex = 0;
+            for (let day = lastDayOfWeek + 1; day <= Math.min(lastDayOfWeek + 7, daysInMonth); day++) {
+                if (scheduleIndex < weekSchedule.length) {
+                    setSchedule(staffName, day, weekSchedule[scheduleIndex]);
+                    scheduleIndex++;
+                }
+            }
+
+            saveData();
+            render();
+        }
+
+        function getWeeks(firstDay, daysInMonth) {
+            const weeks = [];
+            let week = [];
+            
+            for (let i = 0; i < firstDay; i++) {
+                week.push(null);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                week.push(day);
+                if (week.length === 7 || day === daysInMonth) {
+                    while (week.length < 7) {
+                        week.push(null);
+                    }
+                    weeks.push(week);
+                    week = [];
+                }
+            }
+            
+            return weeks;
+        }
+
+        function countWorkDays(staffName, days) {
+            let main = 0, branch = 0, off = 0;
+            days.forEach(day => {
+                if (day) {
+                    const schedule = getSchedule(staffName, day);
+                    if (schedule === 'MAIN') main++;
+                    else if (schedule === 'BRANCH') branch++;
+                    else off++;
+                }
+            });
+            return { main, branch, off, total: main + branch };
+        }
+
+        function countMonthDays(staffName, daysInMonth) {
+            let main = 0, branch = 0, off = 0;
+            for (let day = 1; day <= daysInMonth; day++) {
+                const schedule = getSchedule(staffName, day);
+                if (schedule === 'MAIN') main++;
+                else if (schedule === 'BRANCH') branch++;
+                else off++;
+            }
+            return { main, branch, off, total: main + branch };
+        }
+
+        function render() {
+            document.getElementById('scheduleTitle').textContent = `${months[selectedMonth]} ${selectedYear} Schedule`;
+            
+            const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
+            const firstDay = getFirstDayOfMonth(selectedMonth, selectedYear);
+            const weeks = getWeeks(firstDay, daysInMonth);
+            const filteredStaff = selectedStaff === 'all' ? staff : staff.filter(s => s === selectedStaff);
+            
+            const container = document.getElementById('scheduleContainer');
+            
+            if (filteredStaff.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <p class="text-lg">No staff members added yet. Add some to get started!</p>
+                    </div>
                 `;
-            }).join('');
-        }
-
-        function calculateLate(loginTime) {
-            if (!loginTime) return 0;
-            const [wh, wm] = WORK_START.split(':').map(Number);
-            const [lh, lm] = loginTime.split(':').map(Number);
-            return Math.max(0, (lh * 60 + lm) - (wh * 60 + wm + GRACE_PERIOD));
-        }
-
-        function calculateOvertime(logoutTime) {
-            if (!logoutTime) return 0;
-            const [th, tm] = OVERTIME_THRESHOLD.split(':').map(Number);
-            const [lh, lm] = logoutTime.split(':').map(Number);
-            return (lh * 60 + lm) >= (th * 60 + tm) ? 1 : 0;
-        }
-
-        function calculateWorkingHours(loginTime, logoutTime) {
-            if (!loginTime || !logoutTime) return 0;
-            const [lih, lim] = loginTime.split(':').map(Number);
-            const [loh, lom] = logoutTime.split(':').map(Number);
-            const loginMin = lih * 60 + lim;
-            const logoutMin = loh * 60 + lom;
-            const totalMin = logoutMin < loginMin ? (logoutMin + 1440) - loginMin : logoutMin - loginMin;
-            return Math.max(0, (totalMin - 60) / 60);
-        }
-
-        function generatePayslip() {
-            const staffId = document.getElementById('payslip-staff').value;
-            cutoffStart = document.getElementById('cutoff-start').value;
-            cutoffEnd = document.getElementById('cutoff-end').value;
-            
-            if (!staffId || !cutoffStart || !cutoffEnd) {
-                document.getElementById('payslip-display').innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Please set cutoff period and select a staff member</p>';
                 return;
             }
-
-            const staffMember = staff.find(s => s.id === staffId);
-            const records = timeRecords.filter(r => {
-                const rd = new Date(r.date);
-                return r.staffId === staffId && rd >= new Date(cutoffStart) && rd <= new Date(cutoffEnd);
+            
+            let html = '';
+            
+            filteredStaff.forEach(staffName => {
+                const monthStats = countMonthDays(staffName, daysInMonth);
+                
+                html += `
+                    <div class="mb-12 last:mb-0">
+                        <div class="flex items-center justify-between mb-4 pb-4 border-b-2 border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                <h3 class="text-xl font-bold text-gray-800">${staffName}</h3>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="text-sm">
+                                    <span class="font-semibold">Month Total: </span>
+                                    <span class="text-blue-600 font-bold">${monthStats.main}M</span>
+                                    <span class="mx-1">+</span>
+                                    <span class="text-purple-600 font-bold">${monthStats.branch}B</span>
+                                    <span class="mx-2">=</span>
+                                    <span class="text-green-600 font-bold text-lg">${monthStats.total} days</span>
+                                </div>
+                                <button onclick="removeStaff('${staffName}')" class="no-print p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                `;
+                
+                weeks.forEach((week, weekIdx) => {
+                    const weekStats = countWorkDays(staffName, week);
+                    const lastDayOfWeek = week.filter(d => d !== null).pop();
+                    const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
+                    const hasNextWeek = lastDayOfWeek && lastDayOfWeek < daysInMonth;
+                    
+                    html += `
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm font-semibold text-gray-600">Week ${weekIdx + 1}</span>
+                                <div class="flex items-center gap-4">
+                                    <span class="text-sm text-gray-600">
+                                        Weekly: <span class="text-blue-600 font-semibold">${weekStats.main}M</span> + 
+                                        <span class="text-purple-600 font-semibold">${weekStats.branch}B</span> = 
+                                        <span class="text-green-600 font-bold">${weekStats.total} days</span>
+                                    </span>
+                                    ${hasNextWeek ? `
+                                        <button onclick="copyWeekSchedule('${staffName}', ${JSON.stringify(week).replace(/"/g, '&quot;')})" 
+                                                class="no-print px-3 py-1 text-xs bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-all">
+                                            Copy to Next Week
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-7 gap-3">
+                    `;
+                    
+                    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach((dayName, idx) => {
+                        const day = week[idx];
+                        html += `<div class="text-center">
+                            <div class="text-xs font-semibold text-gray-500 mb-2">${dayName}</div>`;
+                        
+                        if (day) {
+                            const schedule = getSchedule(staffName, day);
+                            const bgClass = schedule === 'MAIN' ? 'bg-blue-100 border-blue-300 text-blue-700' :
+                                          schedule === 'BRANCH' ? 'bg-purple-100 border-purple-300 text-purple-700' :
+                                          'bg-gray-100 border-gray-300 text-gray-600';
+                            
+                            html += `
+                                <div class="space-y-2">
+                                    <div class="text-sm font-bold text-gray-700 bg-gray-100 rounded-lg py-1">${day}</div>
+                                    <select onchange="setSchedule('${staffName}', ${day}, this.value)" 
+                                            class="w-full px-2 py-2 text-sm font-semibold rounded-lg border-2 transition-all ${bgClass}">
+                                        <option value="OFF" ${schedule === 'OFF' ? 'selected' : ''}>OFF</option>
+                                        <option value="MAIN" ${schedule === 'MAIN' ? 'selected' : ''}>MAIN</option>
+                                        <option value="BRANCH" ${schedule === 'BRANCH' ? 'selected' : ''}>BRANCH</option>
+                                    </select>
+                                </div>
+                            `;
+                        } else {
+                            html += '<div class="h-20"></div>';
+                        }
+                        
+                        html += '</div>';
+                    });
+                    
+                    html += `</div></div>`;
+                });
+                
+                html += '</div>';
             });
-
-            const rates = RATES[staffMember.position];
-            let totalWorkingDays = 0, totalHalfDays = 0, totalOvertime = 0, totalRestDays = 0, totalLateMinutes = 0;
-
-            records.forEach(r => {
-                const hours = calculateWorkingHours(r.loginTime, r.logoutTime);
-                const overtime = calculateOvertime(r.logoutTime);
-                const late = calculateLate(r.loginTime);
-
-                if (r.isRestDay && hours >= 0) {
-                    totalRestDays++;
-                } else if (hours >= 9.5) {
-                    totalWorkingDays++;
-                } else if (hours > 0 && hours < 9.5) {
-                    totalHalfDays += hours;
-                }
-                totalOvertime += overtime;
-                totalLateMinutes += late;
-            });
-
-            const hourlyRate = parseFloat((rates.daily / 11).toFixed(2));
-            const grossSalary = (totalWorkingDays * rates.daily) + (totalHalfDays * hourlyRate) + (totalRestDays * rates.daily);
-            const overtimePay = totalOvertime * rates.overtime;
-            const latePenaltyRate = parseFloat((rates.daily / 12 / 60).toFixed(2));
-            const latePenalty = totalLateMinutes * latePenaltyRate;
-            const staffDeds = deductions.filter(d => d.staffId === staffId);
-            const totalDeds = staffDeds.reduce((sum, d) => sum + d.amount, 0);
-            const netSalary = grossSalary + overtimePay - latePenalty - totalDeds;
-
-            const printDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            document.getElementById('payslip-display').innerHTML = `
-                <div class="printable-payslip active">
-                    <div class="print-header">
-                        <h1>SIR RAMOS DRUGSTORE</h1>
-                        <p>Employee Payslip</p>
-                    </div>
-                    <div class="print-info">
-                        <div class="print-info-grid">
-                            <div class="print-info-item"><strong>Date:</strong><span>${printDate}</span></div>
-                            <div class="print-info-item"><strong>Employee Name:</strong><span>${staffMember.name}</span></div>
-                            <div class="print-info-item"><strong>Cut-Off Period:</strong><span>${cutoffStart} to ${cutoffEnd}</span></div>
-                            <div class="print-info-item"><strong>Position:</strong><span style="text-transform: capitalize;">${staffMember.position}</span></div>
-                            <div class="print-info-item"><strong>No. of Working Days:</strong><span>${totalWorkingDays}</span></div>
-                            <div class="print-info-item"><strong>No. of Overtime (hours):</strong><span>${totalOvertime}</span></div>
-                            <div class="print-info-item"><strong>No. of Rest Days:</strong><span>${totalRestDays}</span></div>
-                            <div class="print-info-item"><strong>Half Day Hours:</strong><span>${totalHalfDays.toFixed(2)} hrs</span></div>
-                        </div>
-                    </div>
-                    <div class="print-computation">
-                        <h3 style="margin-bottom: 15px;">Computation for Gross Salary</h3>
-                        <div class="print-computation-row"><span>Working Days (${totalWorkingDays} days × ₱${rates.daily})</span><span>₱${(totalWorkingDays * rates.daily).toFixed(2)}</span></div>
-                        <div class="print-computation-row"><span>Half Day Hours (${totalHalfDays.toFixed(2)} hrs × ₱${hourlyRate}/hr)</span><span>₱${(totalHalfDays * hourlyRate).toFixed(2)}</span></div>
-                        <div class="print-computation-row"><span>Rest Days (${totalRestDays} days × ₱${rates.daily})</span><span>₱${(totalRestDays * rates.daily).toFixed(2)}</span></div>
-                        <div class="print-computation-row"><span>Overtime (${totalOvertime} hours × ₱${rates.overtime})</span><span>₱${overtimePay.toFixed(2)}</span></div>
-                        <div class="print-computation-row"><span>Late Penalty (${totalLateMinutes} mins × ₱${latePenaltyRate}/min)</span><span style="color: #f44336;">- ₱${latePenalty.toFixed(2)}</span></div>
-                        <div class="print-computation-row total"><span>GROSS SALARY</span><span>₱${grossSalary.toFixed(2)}</span></div>
-                    </div>
-                    <div class="print-computation">
-                        <h3 style="margin-bottom: 15px;">Deductions</h3>
-                        ${staffDeds.map(d => `<div class="print-computation-row"><span>${d.label}</span><span style="color: #f44336;">₱${d.amount.toFixed(2)}</span></div>`).join('')}
-                        ${staffDeds.length === 0 ? '<p style="text-align: center; color: #666; padding: 20px;">No deductions</p>' : ''}
-                        <div class="print-computation-row total"><span>TOTAL DEDUCTIONS</span><span style="color: #f44336;">₱${totalDeds.toFixed(2)}</span></div>
-                    </div>
-                    <div class="print-computation">
-                        <div class="print-computation-row total" style="background: #E8F5E9; font-size: 20px;">
-                            <span>TOTAL SALARY (NET PAY)</span><span style="color: #4CAF50;">₱${netSalary.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    <div class="print-footer">
-                        <div class="signature-section">
-                            <div class="signature-box"><div class="signature-line"><strong>Employee Signature</strong></div></div>
-                            <div class="signature-box"><div class="signature-line"><strong>Authorized Signature</strong></div></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="no-print" style="margin-top: 20px; text-align: center;">
-                    <button class="btn-print" onclick="window.print()">🖨️ Print Payslip</button>
-                </div>
-            `;
-            saveData();
+            
+            container.innerHTML = html;
+            
+            // Render print version
+            renderPrintVersion(filteredStaff, daysInMonth, firstDay);
         }
 
-        document.getElementById('cutoff-start').addEventListener('change', e => {
-            cutoffStart = e.target.value;
-            saveData();
-        });
-        
-        document.getElementById('cutoff-end').addEventListener('change', e => {
-            cutoffEnd = e.target.value;
-            saveData();
-        });
+        // Start the app
+        init();
+
+        function renderPrintVersion(filteredStaff, daysInMonth, firstDay) {
+            const printContainer = document.getElementById('printContainer');
+            let printHTML = `<div style="font-family: Arial, sans-serif; padding: 20px;">`;
+
+            filteredStaff.forEach((staffName, staffIdx) => {
+                if (staffIdx > 0) printHTML += '<div style="page-break-before: always;"></div>';
+                
+                const monthStats = countMonthDays(staffName, daysInMonth);
+                
+                printHTML += `
+                    <div style="margin-bottom: 30px;">
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-size: 18px; font-weight: bold;">${months[selectedMonth]} ${selectedYear}</div>
+                            <div style="font-size: 16px; margin-top: 5px;">Staff: ${staffName}</div>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Sun</th>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Mon</th>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Tue</th>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Wed</th>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Thu</th>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Fri</th>
+                                    <th style="border: 1px solid #000; padding: 8px; background: #f0f0f0; font-weight: bold;">Sat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                const weeks = getWeeks(firstDay, daysInMonth);
+                weeks.forEach(week => {
+                    printHTML += '<tr>';
+                    week.forEach(day => {
+                        if (day) {
+                            const schedule = getSchedule(staffName, day);
+                            printHTML += `
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; vertical-align: top;">
+                                    <div style="font-weight: bold; font-size: 16px; margin-bottom: 4px;">${day}</div>
+                                    <div style="font-size: 12px;">${schedule}</div>
+                                </td>
+                            `;
+                        } else {
+                            printHTML += '<td style="border: 1px solid #000; padding: 8px; background: #f9f9f9;"></td>';
+                        }
+                    });
+                    printHTML += '</tr>';
+                });
+
+                printHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            printHTML += '</div>';
+            printContainer.innerHTML = printHTML;
+        }
     </script>
 </body>
 </html>
